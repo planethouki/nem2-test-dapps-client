@@ -19,10 +19,12 @@ import {
   Address,
   AggregateTransaction,
   Deadline,
+  KeyGenerator,
   Mosaic,
   MosaicDefinitionTransaction,
   MosaicFlags,
   MosaicId,
+  MosaicMetadataTransaction,
   MosaicNonce,
   MosaicSupplyChangeAction,
   MosaicSupplyChangeTransaction,
@@ -77,11 +79,21 @@ export default {
           UInt64.fromUint(1),
           networkType,
         )
+        const metadataTx = MosaicMetadataTransaction.create(
+          Deadline.create(1616694977),
+          address,
+          KeyGenerator.generateUInt64Key('Primitives'),
+          mosaicDefinitionTx.mosaicId,
+          3,
+          "NFT",
+          networkType,
+        );
         const tx = AggregateTransaction.createComplete(
           Deadline.create(1616694977),
           [
             mosaicDefinitionTx.toAggregate(publicAccount),
             mosaicSupplyChangeTx.toAggregate(publicAccount),
+            metadataTx.toAggregate(publicAccount)
           ],
           networkType,
           [],
