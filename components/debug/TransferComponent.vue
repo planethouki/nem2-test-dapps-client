@@ -44,11 +44,18 @@ export default {
         return
       }
 
-      window.nem2.getAccountInfo().then(({ networkType, generationHash, publicKey, addressPlain }) => {
+      window.nem2.getAccountInfo().then(({ networkType, generationHash, publicKey, addressPlain, networkProperties }) => {
+        const epochAdjustment = Number(networkProperties.network.epochAdjustment.replace('s', ''))
+        const currencyMosaicId = networkProperties
+          .chain
+          .currencyMosaicId
+          .replace(/'/gm, '')
+          .replace('0x', '')
+        console.log(currencyMosaicId)
         const tx = TransferTransaction.create(
-          Deadline.create(1616694977),
+          Deadline.create(epochAdjustment),
           Address.createFromRawAddress(addressPlain),
-          [new Mosaic(new MosaicId('091F837E059AE13C'), UInt64.fromUint(1))],
+          [new Mosaic(new MosaicId(currencyMosaicId), UInt64.fromUint(1))],
           PlainMessage.create(''),
           NetworkType.TEST_NET,
           UInt64.fromUint(20000)
