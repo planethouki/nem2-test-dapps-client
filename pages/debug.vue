@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import TransferComponent from '~/components/TransferComponent.vue'
-import NftComponent from '~/components/NftComponent.vue'
-import AggregateCompleteComponent from '~/components/AggregateCompleteComponent.vue'
+import TransferComponent from '~/components/debug/TransferComponent.vue'
+import NftComponent from '~/components/debug/NftComponent.vue'
+import AggregateCompleteComponent from '~/components/debug/AggregateCompleteComponent.vue'
 
 export default {
   name: "Debug",
