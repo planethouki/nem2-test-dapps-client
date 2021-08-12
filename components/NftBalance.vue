@@ -46,7 +46,7 @@ export default {
       const metadataHttp = repo.createMetadataRepository()
       const mosaicRegex = new RegExp(/^[0-7]/)
       const scopedMetadataKey = UInt64.fromHex(this.$store.state.metadataKey)
-      const address = Address.createFromRawAddress(this.$store.state.address)
+      const address = Address.createFromRawAddress(this.$store.state.selfAddress)
       this.metadatas = null
       if (this.accountHttpSubscription !== null) this.accountHttpSubscription.unsubscribe()
       this.accountHttpSubscription = accountHttp
