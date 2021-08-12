@@ -50,9 +50,9 @@ export default {
   name: "NftTransfer",
   data () {
     return {
-      recipientAddress: "TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA",
-      mosaicId: "3AA3869FF0AF8B4F",
-      announceMessage: "announce message"
+      recipientAddress: "",
+      mosaicId: "",
+      announceMessage: ""
     }
   },
   computed: {
