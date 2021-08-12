@@ -1,4 +1,4 @@
-# nem2-test-dapps-wallet-client
+# nem2-test-dapps-client
 
 > My stellar Nuxt.js project
 
