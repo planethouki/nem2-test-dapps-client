@@ -1,12 +1,17 @@
 <template>
   <div>
     <h5>All NFT List</h5>
-    <template v-if="nftMetadataPage === null">
+    <template v-if="nftMetadataData === null">
       <b-spinner type="grow" label="Spinning"></b-spinner>
     </template>
     <template v-else>
-      <p v-for="meta in nftMetadataPage.data" :key="meta.id">
-        {{ meta.metadataEntry.targetId.toHex() }}
+      <p v-for="meta in nftMetadataData" :key="meta.id">
+        <span>
+          {{ meta.metadataEntry.targetId.toHex() }}
+        </span>
+        <span v-if="meta.accountInfo">
+          {{ meta.accountInfo.address.plain() }}
+        </span>
       </p>
     </template>
     <b-pagination
@@ -18,13 +23,15 @@
 </template>
 
 <script>
-import {Address, RepositoryFactoryHttp} from 'symbol-sdk'
+import { Address, MosaicId, RepositoryFactoryHttp } from 'symbol-sdk'
+import { Observable, from, of } from 'rxjs'
+import { mergeMap, map, tap } from 'rxjs/operators'
 
 export default {
   name: "NftAllList",
   data () {
     return {
-      nftMetadataPage: null,
+      nftMetadataData: null,
       pageNumber: 1,
       metadataHttpSubscription: null,
       pageSize: 20
@@ -47,8 +54,9 @@ export default {
     get (pageNumber) {
       const repo = new RepositoryFactoryHttp(this.$store.state.endPoint)
       const metadataHttp = repo.createMetadataRepository()
+      const accountHttp = repo.createAccountRepository()
       const metadataAddress = Address.createFromRawAddress(this.$store.state.metadataAddress)
-      this.nftMetadataPage = null
+      this.nftMetadataData = null
       if (this.metadataHttpSubscription !== null) this.metadataHttpSubscription.unsubscribe()
       this.metadataHttpSubscription = metadataHttp
         .search({
@@ -58,9 +66,29 @@ export default {
           pageSize: this.pageSize,
           pageNumber: pageNumber
         })
-        .subscribe((page) => {
-          console.log(page)
-          this.nftMetadataPage = page
+        .pipe(
+          tap(page => console.log('metadata page', page)),
+          map(page => page.data),
+          mergeMap((data) => {
+            const accountAndMetaPromises = data.map((meta) => {
+              return accountHttp.search({
+                mosaicId: meta.metadataEntry.targetId
+              }).toPromise().then((accountInfoPage) => {
+                if (accountInfoPage.data.length > 0) {
+                  return {
+                    ...meta,
+                    accountInfo: accountInfoPage.data[0]
+                  }
+                }
+
+                return meta
+              })
+            })
+            return from(Promise.all(accountAndMetaPromises))
+          })
+        )
+        .subscribe((data) => {
+          this.nftMetadataData = data
         })
     }
   }
