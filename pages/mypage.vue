@@ -39,7 +39,7 @@ export default {
     this.nem2
       .getAccountInfo()
       .then(({ networkType, generationHash, publicKey, addressPlain, networkProperties }) => {
-        this.$store.commit('setSelfAddress', addressPlain)
+        this.$store.commit('account/setAccount', {networkType, generationHash, publicKey, addressPlain, networkProperties})
         this.isLoading = false
       })
   }
