@@ -1,39 +1,20 @@
 <template>
-  <section>
-    <h5 v-b-toggle.nft-buy-xfg234kd94af23>Buy</h5>
-    <b-collapse id="nft-buy-xfg234kd94af23">
-      <div>
-        <b-form-group
-          description="mosaic id to buy"
-          label="NFT ID (Mosaic ID)"
-          label-for="input-1"
-          valid-feedback="Valid Mosaic ID"
-          :invalid-feedback="invalidFeedbackMosaic"
-          :state="stateMosaic"
-        >
-          <b-form-input id="input-1" v-model="mosaicId" :state="stateMosaic" trim></b-form-input>
-        </b-form-group>
-        <div class="d-flex align-items-center">
-          <b-button @click="send">Confirm</b-button>
-          <span class="d-inline-block mr-3"></span>
-          <span> {{ announceMessage }}</span>
-        </div>
-      </div>
-    </b-collapse>
-  </section>
+  <div>
+    <div class="d-flex align-items-center">
+      <b-button @click="send" :disabled="isBuying">
+        Buy
+        <b-spinner small type="grow" v-if="isBuying"></b-spinner>
+      </b-button>
+      <span class="d-inline-block mr-3"></span>
+      <span> {{ message }}</span>
+    </div>
+  </div>
 </template>
 
 <script>
 import {
-  Account,
-  Address, AggregateTransaction,
-  Deadline,
-  Mosaic,
-  MosaicId,
-  NetworkType,
-  PlainMessage, RepositoryFactoryHttp, SignedTransaction,
-  TransferTransaction,
-  UInt64
+  AggregateTransactionCosignature,
+  PublicAccount, RepositoryFactoryHttp, SignedTransaction,
 } from "symbol-sdk";
 import { mapState } from 'vuex'
 import { from, of } from 'rxjs'
@@ -44,20 +25,17 @@ export default {
   name: "NftBuy",
   data () {
     return {
-      mosaicId: "",
-      announceMessage: ""
+      message: "",
+      isBuying: false
+    }
+  },
+  props: {
+    mosaicId: {
+      type: String,
+      required: true
     }
   },
   computed: {
-    stateMosaic() {
-      return this.mosaicId.length >= 16
-    },
-    invalidFeedbackMosaic() {
-      if (this.mosaicId.length > 16) {
-        return 'invalid mosaic id'
-      }
-      return 'Please enter.'
-    },
     ...mapState({
       endPoint: 'endPoint'
     }),
@@ -67,10 +45,8 @@ export default {
   },
   methods: {
     async send () {
-      if (!(this.stateMosaic)) {
-        return
-      }
-
+      this.message = ""
+      this.isBuying = true
       const repo = new RepositoryFactoryHttp(this.endPoint)
       const txHttp = repo.createTransactionRepository()
       const headers = new Headers()
@@ -94,20 +70,59 @@ export default {
               return of({ error: true, message: `Error ${response.status}` });
             }
           }),
-          tap(signed => console.log(signed)),
+          tap(signed => console.log("Buy API", signed)),
           mergeMap(signed => {
-            const ag = AggregateTransaction.createFromPayload(signed.payload)
-            // return from(window.nem2.sign(ag, `buy nft ${this.mosaicId} for 500 xym`))
-            return from(Promise.resolve())
+            const p = window.nem2
+              .cosign(signed.payload, `buy nft ${this.mosaicId} for 500 xym`)
+              .then((cosig) => {
+                const aggregateCosignature = new AggregateTransactionCosignature(
+                  cosig.signature,
+                  PublicAccount.createFromPublicKey(cosig.signer.publicKey, cosig.signer.address.networkType)
+                )
+                const signedTransaction = new SignedTransaction(
+                  signed.payload,
+                  signed.hash,
+                  signed.signerPublicKey,
+                  signed.transactionType,
+                  signed.networkType
+                )
+                return {
+                  signedTransaction,
+                  aggregateCosignature
+                }
+              })
+            return from(p)
           }),
-          mergeMap(cosigned => {
-            // return from(txHttp.announce(cosigned))
-            return from(Promise.resolve())
+          mergeMap(({ signedTransaction, aggregateCosignature }) => {
+
+            const cosignedWithoutSize = signedTransaction.payload
+              + aggregateCosignature.version.toHex()
+              + aggregateCosignature.signer.publicKey
+              + aggregateCosignature.signature
+
+            const size = (cosignedWithoutSize.length / 2).toString(16).padStart(8, '0').toUpperCase()
+            const leSize = size.substr(-2, 2) + size.substr(-4, 2) + size.substr(-6, 2) + size.substr(-8, 2)
+            const cosignedPayload = leSize + cosignedWithoutSize.substr(8)
+
+            const cosignedTx = new SignedTransaction(
+              cosignedPayload,
+              signedTransaction.hash,
+              signedTransaction.signerPublicKey,
+              signedTransaction.type,
+              signedTransaction.networkType
+            )
+            return from(txHttp.announce(cosignedTx))
           })
         )
         .subscribe({
-          next () {
-
+          next: (announceResponse) => {
+            this.message = 'success'
+            this.isBuying = false
+          },
+          error: (err) => {
+            console.error(err)
+            this.message = err.name === 'UserDeniedCosignatureError' ? '' : 'Something Error'
+            this.isBuying = false
           }
         })
     }

@@ -22,7 +22,7 @@
             <b-button disabled>No Wallet</b-button>
           </template>
           <template v-else>
-            <nft-buy />
+            <nft-buy :mosaicId="nft.id.toHex()" />
           </template>
         </div>
       </div>
