@@ -22,7 +22,13 @@
         >
           <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
           <div class="px-1">
-            <div>{{ meta.metadataEntry.targetId.toHex() }}</div>
+            <div>
+              <span>ID</span>
+              <span>&nbsp;</span>
+              <span>
+                {{ meta.metadataEntry.targetId.toHex() }}
+              </span>
+            </div>
             <nft-transfer :mosaicId="meta.metadataEntry.targetId.toHex()" />
           </div>
         </div>

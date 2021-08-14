@@ -13,10 +13,14 @@
         <shape :mosaicId="nft.id.toHex()" />
         <div class="px-1">
           <div>
-            {{ nft.id.toHex() }}
+            <span>ID</span>
+            <span>&nbsp;</span>
+            <span>
+              {{ nft.id.toHex() }}
+            </span>
           </div>
           <div>
-            500 XYM
+            Price &nbsp; 500 XYM
           </div>
           <template v-if="nem2 === null">
             <b-button disabled>No Wallet</b-button>

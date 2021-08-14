@@ -13,10 +13,18 @@
         <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
         <div class="px-1">
           <div>
-            {{ meta.metadataEntry.targetId.toHex() }}
+            <span>ID</span>
+            <span>&nbsp;</span>
+            <span>
+              {{ meta.metadataEntry.targetId.toHex() }}
+            </span>
           </div>
           <div v-if="meta.accountInfo" style="word-break: break-all;">
-            {{ meta.accountInfo.address.plain() }}
+            <span>Owner</span>
+            <span>&nbsp;</span>
+            <span>
+              {{ meta.accountInfo.address.plain() }}
+            </span>
           </div>
         </div>
       </div>
