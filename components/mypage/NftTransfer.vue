@@ -1,33 +1,30 @@
 <template>
   <section>
-      <h5 v-b-toggle.nft-transfer-x5sijiyb6bg5u5sim5>Transfer</h5>
-    <b-collapse id="nft-transfer-x5sijiyb6bg5u5sim5">
-      <div>
-        <b-form-group
-          description="mosaic id to send"
-          label="NFT ID (Mosaic ID)"
-          label-for="input-1"
-          valid-feedback="Valid Mosaic ID"
-          :invalid-feedback="invalidFeedbackMosaic"
-          :state="stateMosaic"
-        >
-          <b-form-input id="input-1" v-model="mosaicId" :state="stateMosaic" trim></b-form-input>
-        </b-form-group>
-        <b-form-group
-          description="address to send"
-          label="Address"
-          label-for="input-2"
-          valid-feedback="Valid Address"
-          :invalid-feedback="invalidFeedbackRecipient"
-          :state="stateRecipient"
-        >
-          <b-form-input id="input-2" v-model="recipientAddress" :state="stateRecipient" trim></b-form-input>
-        </b-form-group>
-        <div class="d-flex align-items-center">
-          <b-button @click="send">Confirm</b-button>
-          <span class="d-inline-block mr-3"></span>
-          <span> {{ announceMessage }}</span>
-        </div>
+    <b-button
+      :class="visible ? null : 'collapsed'"
+      :aria-expanded="visible ? 'true' : 'false'"
+      aria-controls="collapse-4"
+      @click="visible = !visible"
+    >
+      Transfer
+    </b-button>
+    <b-collapse v-model="visible" class="mt-2">
+      <b-form-group
+        label="To Address"
+        :label-for="inputId"
+        valid-feedback="Valid Address"
+        :invalid-feedback="invalidFeedbackRecipient"
+        :state="stateRecipient"
+      >
+        <b-form-input :id="inputId" v-model="recipientAddress" :state="stateRecipient"></b-form-input>
+      </b-form-group>
+      <div class="d-flex align-items-center">
+        <b-button @click="send" :disabled="!stateRecipient || isTransfering">
+          Confirm
+          <b-spinner small type="grow" v-if="isTransfering"></b-spinner>
+        </b-button>
+        <span class="d-inline-block mr-3"></span>
+        <span> {{ message }}</span>
       </div>
     </b-collapse>
   </section>
@@ -45,26 +42,26 @@ import {
   TransferTransaction,
   UInt64
 } from "symbol-sdk";
+import { from } from 'rxjs'
+import { mergeMap } from 'rxjs/operators'
 
 export default {
   name: "NftTransfer",
   data () {
     return {
       recipientAddress: "",
-      mosaicId: "",
-      announceMessage: ""
+      message: "",
+      isTransfering: false,
+      visible: false
+    }
+  },
+  props: {
+    mosaicId: {
+      type: String,
+      required: true
     }
   },
   computed: {
-    stateMosaic() {
-      return this.mosaicId.length >= 16
-    },
-    invalidFeedbackMosaic() {
-      if (this.mosaicId.length > 16) {
-        return 'invalid mosaic id'
-      }
-      return 'Please enter.'
-    },
     stateRecipient() {
       return this.recipientAddress.replace(/-/gm, "").length === 39
     },
@@ -73,13 +70,17 @@ export default {
         return 'invalid address'
       }
       return 'Please enter.'
+    },
+    inputId () {
+      return `input-${Math.random().toString(32).substring(2)}`
     }
   },
   methods: {
     async send () {
-      if (!(this.stateMosaic && this.stateRecipient)) {
+      if (!(this.stateRecipient)) {
         return
       }
+      this.isTransfering = true
       const networkType = this.$store.state.account.networkType
       const generationHash = this.$store.state.account.generationHash
       const rawEpochAdjustment = this.$store.state.account.networkProperties.network.epochAdjustment
@@ -94,23 +95,33 @@ export default {
       )
       const account = Account.generateNewAccount(networkType)
       const tempSignedTx = account.sign(tx, generationHash)
-      const signResult = await window.nem2.sign(tempSignedTx.payload, `send nft ${this.mosaicId} to ${this.recipientAddress}`)
-
-      const signedTx = new SignedTransaction(
-        signResult.payload,
-        signResult.hash,
-        signResult.signerPublicKey,
-        signResult.transactionType,
-        signResult.networkType
-      )
-      const repo = new RepositoryFactoryHttp(this.$store.state.endPoint)
-      const txHttp = repo.createTransactionRepository()
-      this.announceMessage = ""
-      txHttp.announce(signedTx).subscribe({
-        next: (announceResponse) => {
-          this.announceMessage = JSON.stringify(announceResponse)
-        }
-      })
+      const signPromise = window.nem2.sign(tempSignedTx.payload, `send nft ${this.mosaicId} to ${this.recipientAddress}`)
+      from(signPromise)
+        .pipe(
+          mergeMap((signResult) => {
+            const signedTx = new SignedTransaction(
+              signResult.payload,
+              signResult.hash,
+              signResult.signerPublicKey,
+              signResult.transactionType,
+              signResult.networkType
+            )
+            const repo = new RepositoryFactoryHttp(this.$store.state.endPoint)
+            const txHttp = repo.createTransactionRepository()
+            return txHttp.announce(signedTx)
+          })
+        )
+        .subscribe({
+          next: (announceResponse) => {
+            this.message = 'Transaction has been sent'
+            this.isTransfering = false
+          },
+          error: (err) => {
+            console.error(err)
+            this.message = err.name === 'UserDeniedSignatureError' ? '' : 'Something Error'
+            this.isTransfering = false
+          }
+        })
     }
   }
 }

@@ -9,17 +9,15 @@
     <template v-else>
       <h1>MyPage</h1>
       <nft-balance />
-      <nft-transfer />
     </template>
   </div>
 </template>
 
 <script>
 import NftBalance from '~/components/mypage/NftBalance.vue'
-import NftTransfer from '~/components/mypage/NftTransfer.vue'
 
 export default {
-  components: { NftBalance, NftTransfer },
+  components: { NftBalance },
   data () {
     return {
       isLoading: true,

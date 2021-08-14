@@ -22,7 +22,8 @@
         >
           <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
           <div class="px-1">
-            <span>{{ meta.metadataEntry.targetId.toHex() }}</span>
+            <div>{{ meta.metadataEntry.targetId.toHex() }}</div>
+            <nft-transfer :mosaicId="meta.metadataEntry.targetId.toHex()" />
           </div>
         </div>
       </template>
@@ -35,10 +36,11 @@ import { MosaicId, RepositoryFactoryHttp, Address, UInt64 } from 'symbol-sdk'
 import { mergeMap, from,  } from 'rxjs'
 import { mergeWith, map, mergeAll } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
+import NftTransfer from '~/components/mypage/NftTransfer.vue'
 
 export default {
   name: "NftBalance",
-  components: { Shape },
+  components: { NftTransfer, Shape },
   data () {
     return {
       metadatas: null,
