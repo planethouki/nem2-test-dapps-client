@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import NftBalance from '~/components/NftBalance.vue'
-import NftTransfer from '~/components/NftTransfer.vue'
+import NftBalance from '~/components/mypage/NftBalance.vue'
+import NftTransfer from '~/components/mypage/NftTransfer.vue'
 import NftBuy from '~/components/NftBuy.vue'
 
 export default {
