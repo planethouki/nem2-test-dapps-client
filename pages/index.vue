@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <h1>NFT</h1>
     <nft-all-list />
     <nft-sell-list />
   </div>
