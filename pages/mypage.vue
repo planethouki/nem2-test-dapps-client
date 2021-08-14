@@ -28,7 +28,7 @@ export default {
   mounted () {
     if (window.nem2 === undefined) {
       this.isLoading = false
-      this.message = `nem2 not found`
+      this.message = `wallet not found`
       return
     }
 
