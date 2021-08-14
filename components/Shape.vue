@@ -33,7 +33,7 @@ export default {
     this.color2 = this.mosaicId.substr(8,6)
     this.metallic = Number(`0x${this.mosaicId.substr(14, 1)}`)
     this.smoothness = Number(`0x${this.mosaicId.substr(15, 1)}`)
-    console.log(this.shape, this.size, this.color1, this.color2, this.metallic, this.smoothness)
+    // console.log(this.shape, this.size, this.color1, this.color2, this.metallic, this.smoothness)
     const draw = SVG().addTo(`#${this.id}`).size(100, 100)
     switch (this.shape) {
       case 0:
