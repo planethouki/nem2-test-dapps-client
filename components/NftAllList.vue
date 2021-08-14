@@ -5,14 +5,21 @@
       <b-spinner type="grow" label="Spinning"></b-spinner>
     </template>
     <template v-else>
-      <p v-for="meta in nftMetadataData" :key="meta.id">
-        <span>
-          {{ meta.metadataEntry.targetId.toHex() }}
-        </span>
-        <span v-if="meta.accountInfo">
-          {{ meta.accountInfo.address.plain() }}
-        </span>
-      </p>
+      <div
+        v-for="meta in nftMetadataData"
+        :key="meta.id"
+        class="d-flex align-items-center py-1"
+      >
+        <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
+        <div class="px-1">
+          <div>
+            {{ meta.metadataEntry.targetId.toHex() }}
+          </div>
+          <div v-if="meta.accountInfo" style="word-break: break-all;">
+            {{ meta.accountInfo.address.plain() }}
+          </div>
+        </div>
+      </div>
     </template>
     <b-pagination
       v-model="pageNumber"
@@ -26,9 +33,11 @@
 import { Address, MosaicId, RepositoryFactoryHttp } from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
+import Shape from '~/components/Shape.vue'
 
 export default {
   name: "NftAllList",
+  components: { Shape },
   data () {
     return {
       nftMetadataData: null,
