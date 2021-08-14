@@ -74,6 +74,12 @@ export default {
         break
     }
 
+    draw.transform({
+      translateX: -10,
+      translateY: -10,
+      scale: 0.8
+    })
+
     draw.fill(`#${this.color1}`)
   }
 }
