@@ -35,7 +35,7 @@ import {Address, MosaicId, RepositoryFactoryHttp, UInt64} from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
-import NftBuy from '~/components/NftBuy.vue'
+import NftBuy from '~/components/index/NftBuy.vue'
 import { mapState } from 'vuex'
 
 export default {

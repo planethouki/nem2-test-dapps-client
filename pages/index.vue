@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import NftAllList from '~/components/NftAllList.vue'
-import NftSellList from "../components/NftSellList";
+import NftAllList from '~/components/index/NftAllList.vue'
+import NftSellList from "../components/index/NftSellList";
 
 export default {
   components: { NftAllList, NftSellList },
