@@ -10,7 +10,6 @@
       <h1>MyPage</h1>
       <nft-balance />
       <nft-transfer />
-      <nft-buy />
     </template>
   </div>
 </template>
@@ -18,10 +17,9 @@
 <script>
 import NftBalance from '~/components/mypage/NftBalance.vue'
 import NftTransfer from '~/components/mypage/NftTransfer.vue'
-import NftBuy from '~/components/NftBuy.vue'
 
 export default {
-  components: { NftBalance, NftTransfer, NftBuy },
+  components: { NftBalance, NftTransfer },
   data () {
     return {
       isLoading: true,
