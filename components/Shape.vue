@@ -7,6 +7,18 @@
 <script>
 import { SVG } from '@svgdotjs/svg.js'
 
+async function hash(str) {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(str)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  // console.log(hashArray)
+  return hashArray
+  // const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  // console.log(hashHex)
+  // return hashHex
+}
+
 export default {
   name: "Shape",
   props: {
@@ -18,61 +30,40 @@ export default {
   data () {
     return {
       id: `shape-${Math.random().toString(32).substring(2)}`,
-      shape: null,
-      size: null,
+      reserve: null,
+      vertices: null,
       color1: null,
-      color2: null,
+      distortion: null,
       metallic: null,
       smoothness: null
     }
   },
-  mounted () {
-    this.shape = Number(`0x${this.mosaicId.substr(0, 1)}`)
-    this.size = Number(`0x${this.mosaicId.substr(1, 1)}`)
+  async mounted () {
+    this.vertices = Number(`0x${this.mosaicId.substr(0, 1)}`) + 3
+    this.reserve = Number(`0x${this.mosaicId.substr(1, 1)}`)
     this.color1 = this.mosaicId.substr(2, 6)
-    this.color2 = this.mosaicId.substr(8,6)
+    this.distortion = this.mosaicId.substr(8,6)
     this.metallic = Number(`0x${this.mosaicId.substr(14, 1)}`)
     this.smoothness = Number(`0x${this.mosaicId.substr(15, 1)}`)
-    // console.log(this.shape, this.size, this.color1, this.color2, this.metallic, this.smoothness)
     const draw = SVG().addTo(`#${this.id}`).size(100, 100)
-    switch (this.shape) {
-      case 0:
-        draw.rect(100, 100)
-        break
-      case 1:
-        draw.circle(100)
-        break
-      case 2:
-        draw.polyline([[50,13.397], [0,100], [100,100]])
-        break
-      case 3:
-        draw.polyline([[93.30,25], [93.30,75], [50,100], [6.6987,75], [6.6987,25], [50,0], [93.3,25]])
-        break
-      case 4:
-        draw.polyline([[50,13.397], [0,100], [100,100]])
-        break
-      case 5:
-        draw.ellipse(50, 100).move(25, 0)
-        break
-      case 6:
-        draw
-          .polyline([[0, -100], [20, -20], [100, 0], [20, 20], [0, 100], [-20, 20], [-100, 0], [-20, -20]])
-          .transform({
-            translateX: 50,
-            translateY: 50,
-            scale: 0.5
-          })
-          break
-      case 7:
-        draw
-          .polyline([[100,10], [40,198], [190,78], [10,78], [160,198]])
-          .transform({
-            translateX: -50,
-            translateY: -50,
-            scale: 0.5
-          })
-        break
-    }
+
+    const distortionHashArray = await hash(this.distortion)
+
+    const angleEach = 2 * Math.PI / this.vertices
+    const points = [...Array(this.vertices).keys()]
+      .map((n) => {
+        const current = n * angleEach
+        return [Math.sin(current), -Math.cos(current)]
+      })
+      .map(([x, y], index) => {
+        const normalized = distortionHashArray[index] / 256
+        const delta = (normalized - 0.5) / 2
+        const radius = 40 * (1 + delta)
+        return [x * radius, y * radius]
+      })
+      .map(([x, y]) => [x + 50, y + 50])
+
+    draw.polyline(points)
 
     draw.transform({
       translateX: -10,
