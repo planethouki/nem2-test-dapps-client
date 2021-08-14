@@ -15,9 +15,16 @@
         <b-spinner type="grow" label="Spinning"></b-spinner>
       </template>
       <template v-else>
-        <p v-for="meta in metadatas" :key="meta.id">
-          <span>{{ meta.metadataEntry.targetId.toHex() }}</span>
-        </p>
+        <div
+          v-for="meta in metadatas"
+          :key="meta.id"
+          class="d-flex align-items-center py-1"
+        >
+          <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
+          <div class="px-1">
+            <span>{{ meta.metadataEntry.targetId.toHex() }}</span>
+          </div>
+        </div>
       </template>
     </section>
   </div>
@@ -27,9 +34,11 @@
 import { MosaicId, RepositoryFactoryHttp, Address, UInt64 } from 'symbol-sdk'
 import { mergeMap, from,  } from 'rxjs'
 import { mergeWith, map, mergeAll } from 'rxjs/operators'
+import Shape from '~/components/Shape.vue'
 
 export default {
   name: "NftBalance",
+  components: { Shape },
   data () {
     return {
       metadatas: null,
