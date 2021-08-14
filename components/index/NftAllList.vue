@@ -51,7 +51,7 @@ export default {
       nftMetadataData: null,
       pageNumber: 1,
       metadataHttpSubscription: null,
-      pageSize: 20
+      pageSize: 10
     }
   },
   computed: {
