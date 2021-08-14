@@ -7,7 +7,7 @@
       {{ message }}
     </template>
     <template v-else>
-      <h1>NFT</h1>
+      <h1>MyPage</h1>
       <nft-balance />
       <nft-transfer />
       <nft-buy />
