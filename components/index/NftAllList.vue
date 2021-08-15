@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="py-2">
     <div class="d-flex align-items-center">
       <h5>All NFT List</h5>
       <div class="mb-2 ml-2" @click="get(pageNumber)">

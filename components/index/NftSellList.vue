@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="py-2">
     <h5>Buy NFT</h5>
     <template v-if="nftMosaics === null">
       <b-spinner type="grow" label="Spinning"></b-spinner>
