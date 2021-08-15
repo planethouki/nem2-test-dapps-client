@@ -1,5 +1,11 @@
 <template>
   <div>
+    <section class="py-2">
+      <b-button variant="outline-secondary" @click="get()">
+        <span>Reload</span>
+        <b-icon-arrow-clockwise></b-icon-arrow-clockwise>
+      </b-button>
+    </section>
     <section>
       <h5>Your Balance</h5>
       <template v-if="metadatas === null">
@@ -43,10 +49,11 @@ import { mergeMap, from,  } from 'rxjs'
 import { mergeWith, map, mergeAll } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
 import NftTransfer from '~/components/mypage/NftTransfer.vue'
+import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftBalance",
-  components: { NftTransfer, Shape },
+  components: { NftTransfer, Shape, BIconArrowClockwise },
   data () {
     return {
       metadatas: null,
