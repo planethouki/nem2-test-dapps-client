@@ -1,8 +1,20 @@
 <template>
   <div>
-    <h5>All NFT List</h5>
+    <div class="d-flex align-items-center">
+      <h5>All NFT List</h5>
+      <div class="mb-2 ml-2" @click="get(pageNumber)">
+        <b-button variant="outline-secondary">
+          <b-icon-arrow-clockwise></b-icon-arrow-clockwise>
+        </b-button>
+      </div>
+    </div>
     <template v-if="nftMetadataData === null">
       <b-spinner type="grow" label="Spinning"></b-spinner>
+    </template>
+    <template v-else-if="nftMetadataData.length === 0">
+      <div class="my-2">
+        No Item
+      </div>
     </template>
     <template v-else>
       <div
@@ -42,10 +54,11 @@ import { Address, MosaicId, RepositoryFactoryHttp } from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
+import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftAllList",
-  components: { Shape },
+  components: { Shape, BIconArrowClockwise },
   data () {
     return {
       nftMetadataData: null,
