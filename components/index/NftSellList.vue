@@ -1,6 +1,13 @@
 <template>
   <div class="py-2">
-    <h5>Buy NFT</h5>
+    <div class="d-flex align-items-center">
+      <h5>Buy NFT</h5>
+      <div class="mb-2 ml-2" @click="get()">
+        <b-button variant="outline-secondary">
+          <b-icon-arrow-clockwise></b-icon-arrow-clockwise>
+        </b-button>
+      </div>
+    </div>
     <template v-if="nftMosaics === null">
       <b-spinner type="grow" label="Spinning"></b-spinner>
     </template>
@@ -41,10 +48,11 @@ import { mergeMap, map, tap } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
 import NftBuy from '~/components/index/NftBuy.vue'
 import { mapState } from 'vuex'
+import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftSellList",
-  components: { Shape, NftBuy },
+  components: { Shape, NftBuy, BIconArrowClockwise },
   data () {
     return {
       nftMosaics: null,
