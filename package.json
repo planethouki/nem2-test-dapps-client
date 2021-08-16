@@ -17,7 +17,8 @@
     "bootstrap-vue": "^2.0.0",
     "nuxt": "^2.0.0",
     "rxjs": "^7.3.0",
-    "symbol-sdk": "^1.0.1"
+    "symbol-sdk": "^1.0.1",
+    "three": "^0.131.3"
   },
   "devDependencies": {}
 }
