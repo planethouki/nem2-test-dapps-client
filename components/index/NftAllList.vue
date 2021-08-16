@@ -9,36 +9,27 @@
       </div>
     </div>
     <template v-if="nftMetadataData === null">
-      <b-spinner type="grow" label="Spinning"></b-spinner>
-    </template>
-    <template v-else-if="nftMetadataData.length === 0">
-      <div class="my-2">
-        No Item
+      <div
+        v-for="num in new Array(10)"
+        :key="num"
+      >
+        <nft-item-skeleton />
       </div>
     </template>
     <template v-else>
       <div
         v-for="meta in nftMetadataData"
-        :key="meta.id"
-        class="d-flex align-items-center py-1"
+        :key="meta.metadataInfo.id"
       >
-        <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
-        <div class="px-1">
-          <div>
-            <span>ID</span>
-            <span>&nbsp;</span>
-            <span>
-              {{ meta.metadataEntry.targetId.toHex() }}
-            </span>
-          </div>
-          <div v-if="meta.accountInfo" style="word-break: break-all;">
-            <span>Owner</span>
-            <span>&nbsp;</span>
-            <span>
-              {{ meta.accountInfo.address.plain() }}
-            </span>
-          </div>
-        </div>
+        <nft-item
+          :mosaicId="meta.mosaicId"
+          :address="meta.owner" />
+      </div>
+      <div
+        v-for="num in new Array(Math.max(10 - nftMetadataData.length, 0))"
+        :key="num"
+      >
+        <nft-item-empty />
       </div>
     </template>
     <b-pagination
@@ -54,11 +45,14 @@ import { Address, MosaicId, RepositoryFactoryHttp } from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
+import NftItem from '~/components/index/NftItem.vue'
+import NftItemEmpty from '~/components/index/NftItemEmpty.vue'
+import NftItemSkeleton from '~/components/index/NftItemSkeleton.vue'
 import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftAllList",
-  components: { Shape, BIconArrowClockwise },
+  components: { Shape, BIconArrowClockwise, NftItem, NftItemEmpty, NftItemSkeleton },
   data () {
     return {
       nftMetadataData: null,
@@ -106,12 +100,17 @@ export default {
               }).toPromise().then((accountInfoPage) => {
                 if (accountInfoPage.data.length > 0) {
                   return {
-                    ...meta,
-                    accountInfo: accountInfoPage.data[0]
+                    metadataInfo: meta,
+                    accountInfo: accountInfoPage.data[0],
+                    owner: accountInfoPage.data[0].address.plain(),
+                    mosaicId: meta.metadataEntry.targetId.toHex()
                   }
                 }
 
-                return meta
+                return {
+                  metadataInfo: meta,
+                  mosaicId: meta.metadataEntry.targetId.toHex()
+                }
               })
             })
             return from(Promise.all(accountAndMetaPromises))
