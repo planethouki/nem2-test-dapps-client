@@ -6,16 +6,10 @@
         <span>ID</span>
         <span>&nbsp;</span>
         <span>
-              {{ mosaicId }}
-            </span>
+          {{ mosaicId }}
+        </span>
       </div>
-      <div v-if="address" style="word-break: break-all;">
-        <span>Owner</span>
-        <span>&nbsp;</span>
-        <span>
-              {{ address }}
-            </span>
-      </div>
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -28,10 +22,6 @@ export default {
   components: { Shape },
   props: {
     mosaicId: {
-      type: String,
-      required: true
-    },
-    address: {
       type: String,
       required: true
     }

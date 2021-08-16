@@ -10,7 +10,7 @@
     </div>
     <template v-if="nftMetadataData === null">
       <div
-        v-for="num in new Array(10)"
+        v-for="num in [...Array(10).map((_, i) => i)]"
         :key="num"
       >
         <nft-item-skeleton />
@@ -21,14 +21,21 @@
         v-for="meta in nftMetadataData"
         :key="meta.metadataInfo.id"
       >
-        <nft-item
-          :mosaicId="meta.mosaicId"
-          :address="meta.owner" />
+        <nft-item :mosaicId="meta.mosaicId">
+          <div style="word-break: break-all;">
+            <span>Owner</span>
+            <span>&nbsp;</span>
+            <span>
+              {{ meta.owner }}
+            </span>
+          </div>
+        </nft-item>
       </div>
       <div
-        v-for="num in new Array(Math.max(10 - nftMetadataData.length, 0))"
+        v-for="num in [...new Array(Math.max(10 - nftMetadataData.length, 0)).map((_, i) => i)]"
         :key="num"
       >
+        {{ num }}
         <nft-item-empty />
       </div>
     </template>
