@@ -18,7 +18,10 @@
     <section>
       <h5>Your List</h5>
       <template v-if="metadatas === null">
-        <b-spinner type="grow" label="Spinning"></b-spinner>
+        <nft-item-skeleton />
+      </template>
+      <template v-else-if="metadatas.length === 0">
+        <nft-item-empty />
       </template>
       <template v-else>
         <div
@@ -26,17 +29,9 @@
           :key="meta.id"
           class="d-flex align-items-center py-1"
         >
-          <shape :mosaicId="meta.metadataEntry.targetId.toHex()" />
-          <div class="px-1">
-            <div>
-              <span>ID</span>
-              <span>&nbsp;</span>
-              <span>
-                {{ meta.metadataEntry.targetId.toHex() }}
-              </span>
-            </div>
+          <nft-item :mosaicId="meta.metadataEntry.targetId.toHex()">
             <nft-transfer :mosaicId="meta.metadataEntry.targetId.toHex()" />
-          </div>
+          </nft-item>
         </div>
       </template>
     </section>
@@ -47,13 +42,15 @@
 import { MosaicId, RepositoryFactoryHttp, Address, UInt64 } from 'symbol-sdk'
 import { mergeMap, from,  } from 'rxjs'
 import { mergeWith, map, mergeAll } from 'rxjs/operators'
-import Shape from '~/components/Shape.vue'
 import NftTransfer from '~/components/mypage/NftTransfer.vue'
+import NftItem from '~/components/NftItem.vue'
+import NftItemEmpty from '~/components/NftItemEmpty.vue'
+import NftItemSkeleton from '~/components/NftItemSkeleton.vue'
 import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftBalance",
-  components: { NftTransfer, Shape, BIconArrowClockwise },
+  components: { NftTransfer, NftItem, NftItemEmpty, NftItemSkeleton, BIconArrowClockwise },
   data () {
     return {
       metadatas: null,
