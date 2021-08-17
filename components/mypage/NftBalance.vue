@@ -95,9 +95,15 @@ export default {
               })
           })
         )
-        .subscribe((metadatas) => {
-          console.log('owned mosaics', metadatas)
-          this.metadatas = metadatas
+        .subscribe({
+          next: (metadatas) => {
+            console.log('owned mosaics', metadatas)
+            this.metadatas = metadatas
+          },
+          error: (err) => {
+            console.error(err)
+            this.metadatas = []
+          }
         })
     }
   }

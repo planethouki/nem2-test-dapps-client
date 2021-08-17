@@ -9,7 +9,10 @@
       </div>
     </div>
     <template v-if="nftMosaics === null">
-      <b-spinner type="grow" label="Spinning"></b-spinner>
+      <nft-item-skeleton />
+    </template>
+    <template v-else-if="nftMosaics.length === 0">
+      <nft-item-empty />
     </template>
     <template v-else>
       <div
@@ -17,15 +20,7 @@
         :key="nft.id.toHex()"
         class="d-flex align-items-center py-1"
       >
-        <shape :mosaicId="nft.id.toHex()" />
-        <div class="px-1">
-          <div>
-            <span>ID</span>
-            <span>&nbsp;</span>
-            <span>
-              {{ nft.id.toHex() }}
-            </span>
-          </div>
+        <nft-item :mosaicId="nft.id.toHex()">
           <div>
             Price &nbsp; 500 XYM
           </div>
@@ -35,7 +30,7 @@
           <template v-else>
             <nft-buy :mosaicId="nft.id.toHex()" />
           </template>
-        </div>
+        </nft-item>
       </div>
     </template>
   </div>
@@ -45,14 +40,16 @@
 import {Address, MosaicId, RepositoryFactoryHttp, UInt64} from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
-import Shape from '~/components/Shape.vue'
+import NftItem from '~/components/NftItem.vue'
+import NftItemEmpty from '~/components/NftItemEmpty.vue'
+import NftItemSkeleton from '~/components/NftItemSkeleton.vue'
 import NftBuy from '~/components/index/NftBuy.vue'
 import { mapState } from 'vuex'
 import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
   name: "NftSellList",
-  components: { Shape, NftBuy, BIconArrowClockwise },
+  components: { NftItem, NftItemEmpty, NftItemSkeleton, NftBuy, BIconArrowClockwise },
   data () {
     return {
       nftMosaics: null,
