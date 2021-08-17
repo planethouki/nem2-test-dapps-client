@@ -52,9 +52,9 @@ import { Address, MosaicId, RepositoryFactoryHttp } from 'symbol-sdk'
 import { Observable, from, of } from 'rxjs'
 import { mergeMap, map, tap } from 'rxjs/operators'
 import Shape from '~/components/Shape.vue'
-import NftItem from '~/components/index/NftItem.vue'
-import NftItemEmpty from '~/components/index/NftItemEmpty.vue'
-import NftItemSkeleton from '~/components/index/NftItemSkeleton.vue'
+import NftItem from '~/components/NftItem.vue'
+import NftItemEmpty from '~/components/NftItemEmpty.vue'
+import NftItemSkeleton from '~/components/NftItemSkeleton.vue'
 import { BIconArrowClockwise } from 'bootstrap-vue'
 
 export default {
