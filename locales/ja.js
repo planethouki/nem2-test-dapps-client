@@ -1,4 +1,9 @@
 export default {
   hello: 'こんにちは',
-  documentationTitle: 'ドキュメント'
+  docs: {
+    title: 'Documentation',
+    gs: {
+      title: 'Getting Started',
+    }
+  }
 }
