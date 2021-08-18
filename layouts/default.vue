@@ -20,6 +20,7 @@
       <b-navbar-nav>
         <b-nav-item href="https://github.com/planethouki/nem2-test-dapps-client" target="_blank">GitHub</b-nav-item>
         <b-nav-item to="/debug">Debug</b-nav-item>
+        <b-nav-item to="/docs">Docs</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
   </div>
