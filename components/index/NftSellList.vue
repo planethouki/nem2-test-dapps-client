@@ -1,7 +1,7 @@
 <template>
   <div class="py-2">
     <div class="d-flex align-items-center">
-      <h5>Buy NFT</h5>
+      <h5>{{$t('index.buy.title')}}</h5>
       <div class="mb-2 ml-2" @click="get()">
         <b-button variant="outline-secondary">
           <b-icon-arrow-clockwise></b-icon-arrow-clockwise>

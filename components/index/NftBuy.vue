@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex align-items-center">
       <b-button @click="send" :disabled="isBuying">
-        Buy
+        {{$t('index.buy.buyButton.text')}}
         <b-spinner small type="grow" v-if="isBuying"></b-spinner>
       </b-button>
       <span class="d-inline-block mr-3"></span>
