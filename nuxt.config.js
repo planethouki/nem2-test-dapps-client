@@ -40,6 +40,7 @@ export default {
   modules: [
     // Doc: https://bootstrap-vue.js.org
     'bootstrap-vue/nuxt',
+    '@nuxtjs/i18n',
   ],
   /*
   ** Build configuration
@@ -50,5 +51,18 @@ export default {
     */
     extend (config, ctx) {
     }
-  }
+  },
+  i18n: {
+    locales: [
+      { code: 'ja', iso: 'ja_JP', file: 'ja.js' },
+      { code: 'en', iso: 'en-US', file: 'en.js' },
+    ],
+    lazy: true,
+    langDir: 'locales/',
+    defaultLocale: 'ja',
+    vueI18n: {
+      fallbackLocale: 'en',
+    },
+    detectBrowserLanguage: { alwaysRedirect: false },
+  },
 }
