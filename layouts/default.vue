@@ -11,7 +11,7 @@
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/mypage">MyPage</b-nav-item>
+          <b-nav-item :to="localePath('/mypage')">MyPage</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -19,8 +19,8 @@
     <b-navbar>
       <b-navbar-nav>
         <b-nav-item href="https://github.com/planethouki/nem2-test-dapps-client" target="_blank">GitHub</b-nav-item>
-        <b-nav-item to="/debug">Debug</b-nav-item>
-        <b-nav-item to="/docs">Docs</b-nav-item>
+        <b-nav-item :to="localePath('/debug')">Debug</b-nav-item>
+        <b-nav-item :to="localePath('/docs')">Docs</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
   </div>
