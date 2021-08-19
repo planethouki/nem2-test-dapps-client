@@ -19,7 +19,6 @@
     <b-navbar>
       <b-navbar-nav>
         <b-nav-item href="https://github.com/planethouki/nem2-test-dapps-client" target="_blank">GitHub</b-nav-item>
-        <b-nav-item :to="localePath('/debug')">Debug</b-nav-item>
         <b-nav-item :to="localePath('/docs')">Docs</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
