@@ -73,7 +73,7 @@ export default {
           tap(signed => console.log("Buy API", signed)),
           mergeMap(signed => {
             const p = window.nem2
-              .cosign(signed.payload, `buy nft ${this.mosaicId} for 500 xym`)
+              .cosign(signed.payload, `Buy NFT ${this.mosaicId} for 500 xym`)
               .then((cosig) => {
                 const aggregateCosignature = new AggregateTransactionCosignature(
                   cosig.signature,

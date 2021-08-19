@@ -95,7 +95,7 @@ export default {
       )
       const account = Account.generateNewAccount(networkType)
       const tempSignedTx = account.sign(tx, generationHash)
-      const signPromise = window.nem2.sign(tempSignedTx.payload, `send nft ${this.mosaicId} to ${this.recipientAddress}`)
+      const signPromise = window.nem2.sign(tempSignedTx.payload, `Send NFT ${this.mosaicId} to ${this.recipientAddress}`)
       from(signPromise)
         .pipe(
           mergeMap((signResult) => {
