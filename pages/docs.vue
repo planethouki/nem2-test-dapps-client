@@ -47,10 +47,15 @@
       <li>
         モザイクには、以下の条件のメタデータが付いている必要があります
         <ul>
-          <li>キーはAB66A77390046840</li>
-          <li>対象アドレスはTCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA</li>
+          <li>Scoped Metadata Key: AB66A77390046840</li>
+          <li>Target Address: TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA</li>
         </ul>
       </li>
+    </ul>
+    <h3>その他</h3>
+    <ul>
+      <li>保有されたモザイクに関しては、好きに使ってもらって構いません</li>
+      <li>メインネットでは決して使用しないでください</li>
     </ul>
   </div>
 </template>
